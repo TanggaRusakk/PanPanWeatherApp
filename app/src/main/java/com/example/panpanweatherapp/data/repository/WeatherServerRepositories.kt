@@ -26,8 +26,8 @@ class WeatherServerRepositories(
                     rainFall = weather?.rain?.`1h` ?: 0.0,
                     pressure = weather?.main?.pressure ?: 0,
                     clouds = weather?.clouds?.all ?: 0,
-                    sunrise = weather?.sys?.sunrise ?: 0,
-                    sunset = weather?.sys?.sunset ?: 0,
+                    sunrise = weather?.sys?.sunrise?.toLong() ?: 0,
+                    sunset = weather?.sys?.sunset?.toLong() ?: 0,
                     weatherIcon = weather?.weather?.get(0)?.icon ?: "",
                     weatherImage =
                         if (weather?.weather?.get(0)?.main == "Clouds") R.drawable.blue_and_black_bold_typography_quote_poster
