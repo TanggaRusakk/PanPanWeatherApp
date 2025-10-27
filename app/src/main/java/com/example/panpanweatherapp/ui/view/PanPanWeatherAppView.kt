@@ -1,5 +1,7 @@
 package com.example.panpanweatherapp.ui.view
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -19,7 +21,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -27,6 +28,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -36,21 +38,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.panpanweatherapp.R
+import com.example.panpanweatherapp.ui.viewmodel.WeatherViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PanPanWeatherAppView(
     modifier: Modifier = Modifier,
+    viewModel: WeatherViewModel = viewModel(),
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
     var cityName by rememberSaveable {
         mutableStateOf("")
     }
+
+    val weather by viewModel.weather.collectAsState()
 
     Box(
         modifier = modifier
@@ -119,7 +124,9 @@ fun PanPanWeatherAppView(
                         .width(8.dp)
                 )
                 Button(
-                    onClick = {},
+                    onClick = {
+                        viewModel.getWeather(cityName)
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .fillMaxHeight()
@@ -161,11 +168,24 @@ fun PanPanWeatherAppView(
                 modifier = Modifier
                     .height(24.dp)
             )
-            InfoView()
+            if (weather != null) {
+                if (weather!!.isError) {
+                    ErrorView(
+                        errorMessage = "HTTP ${weather!!.errorCode} ${weather!!.errorMessage}"
+                    )
+                } else {
+                    InfoView(
+                        weather = weather!!
+                    )
+                }
+            } else {
+                NullView()
+            }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 private fun PanPanWeatherAppPreview() {

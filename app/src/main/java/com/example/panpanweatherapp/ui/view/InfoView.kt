@@ -1,5 +1,7 @@
 package com.example.panpanweatherapp.ui.view
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,23 +18,33 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.panpanweatherapp.R
+import com.example.panpanweatherapp.data.container.WeatherServerContainer
+import com.example.panpanweatherapp.ui.model.WeatherModel
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun InfoView(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    weather: WeatherModel
 ) {
     LazyColumn(
         modifier = Modifier
@@ -54,7 +66,7 @@ fun InfoView(
                         .width(8.dp)
                 )
                 Text(
-                    text = "Jakarta",
+                    text = "${weather.cityName}",
                     color = Color.White,
                     fontSize = 20.sp
                 )
@@ -66,7 +78,7 @@ fun InfoView(
         }
         item {
             Text(
-                text = "September 29",
+                text = "${formatDate(weather.time)}",
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 36.sp,
@@ -77,7 +89,7 @@ fun InfoView(
                     .height(4.dp)
             )
             Text(
-                text = "Updated as of 2:53 PM",
+                text = "Updated as of ${formatTime(weather.time)}",
                 color = Color.White,
                 textAlign = TextAlign.Center,
                 fontSize = 14.sp
@@ -96,20 +108,21 @@ fun InfoView(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Image(
-                        painter = painterResource(
-                            id = R.drawable.cloud
-                        ),
-                        contentDescription = "",
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(WeatherServerContainer.BASE_URL_IMAGE + weather.weatherIcon + ".png")
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = "${weather.weather}",
                         modifier = Modifier
-                            .size(52.dp)
+                            .size(72.dp)
                     )
                     Spacer(
                         modifier = Modifier
-                            .height(32.dp)
+                            .height(28.dp)
                     )
                     Text(
-                        text = "Rain",
+                        text = "${weather.weather}",
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 28.sp,
@@ -120,7 +133,7 @@ fun InfoView(
                             .height(4.dp)
                     )
                     Text(
-                        text = "28°C",
+                        text = "${weather.temperature}°C",
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 80.sp,
@@ -133,9 +146,9 @@ fun InfoView(
                 )
                 Image(
                     painter = painterResource(
-                        id = R.drawable.blue_and_black_bold_typography_quote_poster_2
+                        id = weather.weatherImage
                     ),
-                    contentDescription = "",
+                    contentDescription = "${weather.weather}",
                     modifier = Modifier
                         .height(240.dp)
                 )
@@ -193,7 +206,7 @@ fun InfoView(
                                 .height(8.dp)
                         )
                         Text(
-                            text = "80%",
+                            text = "${weather.humidity}%",
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp,
@@ -245,7 +258,7 @@ fun InfoView(
                                 .height(8.dp)
                         )
                         Text(
-                            text = "2km/h",
+                            text = "${weather.windSpeed}km/h",
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp,
@@ -297,7 +310,7 @@ fun InfoView(
                                 .height(8.dp)
                         )
                         Text(
-                            text = "32°",
+                            text = "${weather.feelsLike}°",
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp,
@@ -360,7 +373,7 @@ fun InfoView(
                                 .height(8.dp)
                         )
                         Text(
-                            text = "0.0 mm",
+                            text = "${weather.rainFall} mm",
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp,
@@ -412,7 +425,7 @@ fun InfoView(
                                 .height(8.dp)
                         )
                         Text(
-                            text = "1011hPa",
+                            text = "${weather.pressure}hPa",
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp,
@@ -464,7 +477,7 @@ fun InfoView(
                                 .height(8.dp)
                         )
                         Text(
-                            text = "8%",
+                            text = "${weather.clouds}%",
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp,
@@ -514,7 +527,7 @@ fun InfoView(
                             .height(8.dp)
                     )
                     Text(
-                        text = "5:22 AM",
+                        text = "${formatTime(weather.time)}",
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
@@ -554,7 +567,7 @@ fun InfoView(
                             .height(8.dp)
                     )
                     Text(
-                        text = "5:22 AM",
+                        text = "${formatTime(weather.time)}",
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
@@ -569,4 +582,21 @@ fun InfoView(
             )
         }
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+private fun formatDate(timestamp: Long): String {
+    val formatter = DateTimeFormatter.ofPattern("MMMM d", Locale("id"))
+        .withZone(ZoneId.systemDefault())
+    val formattedDate = formatter.format(Instant.ofEpochSecond(timestamp))
+    return formattedDate
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+private fun formatTime(timestamp: Long): String {
+    val formatter = DateTimeFormatter.ofPattern("h:mm a", Locale("en"))
+        .withZone(ZoneId.systemDefault())
+
+    val formattedTime = formatter.format(Instant.ofEpochSecond(timestamp))
+    return formattedTime
 }
