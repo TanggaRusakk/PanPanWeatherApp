@@ -527,7 +527,7 @@ fun InfoView(
                             .height(8.dp)
                     )
                     Text(
-                        text = "${formatTime(weather.time)}",
+                        text = "${formatTime(weather.sunrise)}",
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
@@ -567,7 +567,7 @@ fun InfoView(
                             .height(8.dp)
                     )
                     Text(
-                        text = "${formatTime(weather.time)}",
+                        text = "${formatTime(weather.sunset)}",
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
