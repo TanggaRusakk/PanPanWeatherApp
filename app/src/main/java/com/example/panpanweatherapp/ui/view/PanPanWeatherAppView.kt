@@ -116,7 +116,9 @@ fun PanPanWeatherAppView(
                         focusedTextColor = Color.White,
                         unfocusedTextColor = Color.Gray,
                         focusedContainerColor = Color.White.copy(alpha = 0.05f),
-                        unfocusedContainerColor = Color.White.copy(alpha = 0.05f)
+                        unfocusedContainerColor = Color.White.copy(alpha = 0.05f),
+                        focusedBorderColor = Color.White,
+                        cursorColor = Color.White
                     )
                 )
                 Spacer(
