@@ -175,7 +175,8 @@ fun PanPanWeatherAppView(
                     )
                 } else {
                     InfoView(
-                        weather = weather!!
+                        weather = weather!!,
+                        viewModel = viewModel
                     )
                 }
             } else {

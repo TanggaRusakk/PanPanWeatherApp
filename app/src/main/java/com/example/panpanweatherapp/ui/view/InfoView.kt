@@ -35,6 +35,7 @@ import coil.request.ImageRequest
 import com.example.panpanweatherapp.R
 import com.example.panpanweatherapp.data.container.WeatherServerContainer
 import com.example.panpanweatherapp.ui.model.WeatherModel
+import com.example.panpanweatherapp.ui.viewmodel.WeatherViewModel
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -44,7 +45,8 @@ import java.util.Locale
 @Composable
 fun InfoView(
     modifier: Modifier = Modifier,
-    weather: WeatherModel
+    weather: WeatherModel,
+    viewModel: WeatherViewModel
 ) {
     LazyColumn(
         modifier = Modifier
@@ -78,7 +80,7 @@ fun InfoView(
         }
         item {
             Text(
-                text = "${formatDate(weather.time)}",
+                text = "${viewModel.formatDate(weather.time)}",
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 36.sp,
@@ -89,7 +91,7 @@ fun InfoView(
                     .height(4.dp)
             )
             Text(
-                text = "Updated as of ${formatTime(weather.time)}",
+                text = "Updated as of ${viewModel.formatTime(weather.time)}",
                 color = Color.White,
                 textAlign = TextAlign.Center,
                 fontSize = 14.sp
@@ -527,7 +529,7 @@ fun InfoView(
                             .height(8.dp)
                     )
                     Text(
-                        text = "${formatTime(weather.sunrise)}",
+                        text = "${viewModel.formatTime(weather.sunrise)}",
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
@@ -567,7 +569,7 @@ fun InfoView(
                             .height(8.dp)
                     )
                     Text(
-                        text = "${formatTime(weather.sunset)}",
+                        text = "${viewModel.formatTime(weather.sunset)}",
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
@@ -584,19 +586,3 @@ fun InfoView(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
-private fun formatDate(timestamp: Long): String {
-    val formatter = DateTimeFormatter.ofPattern("MMMM d", Locale("id"))
-        .withZone(ZoneId.systemDefault())
-    val formattedDate = formatter.format(Instant.ofEpochSecond(timestamp))
-    return formattedDate
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-private fun formatTime(timestamp: Long): String {
-    val formatter = DateTimeFormatter.ofPattern("h:mm a", Locale("en"))
-        .withZone(ZoneId.systemDefault())
-
-    val formattedTime = formatter.format(Instant.ofEpochSecond(timestamp))
-    return formattedTime
-}
