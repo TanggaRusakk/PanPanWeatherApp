@@ -26,6 +26,10 @@ class WeatherViewModel: ViewModel() {
         }
     }
 
+    fun resetWeather() {
+        _weather.value = null
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun formatDate(timestamp: Long): String {
         val formatter = DateTimeFormatter.ofPattern("MMMM d", Locale("id"))

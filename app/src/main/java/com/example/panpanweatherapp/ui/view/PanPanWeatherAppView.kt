@@ -127,7 +127,11 @@ fun PanPanWeatherAppView(
                 )
                 Button(
                     onClick = {
-                        viewModel.getWeather(cityName)
+                        if (cityName.isNotBlank()) {
+                            viewModel.getWeather(cityName)
+                        } else {
+                            viewModel.resetWeather()
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
